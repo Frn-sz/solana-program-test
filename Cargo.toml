@@ -1,0 +1,12 @@
+[package]
+name = "test-program"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+borsh = {version = "1.5.5",features = ["derive"]}
+pinocchio = "0.7.1"
+solana-pubkey = "=2.1.11"
