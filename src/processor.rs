@@ -14,21 +14,7 @@ use crate::{
 pub struct Processor {}
 
 impl Processor {
-    pub fn process_instruction(
-        program_id: &[u8; 32],
-        accounts: &[AccountInfo],
-        instruction_data: &[u8],
-    ) {
-        let ix_data = AtaInstructions::unpack(instruction_data);
-
-        match ix_data {
-            Ok(AtaInstructions::CreateATA(create_ata)) => {
-                Self::process_create_ata(&create_ata, accounts);
-            }
-            Err(_) => {}
-        }
-    }
-    fn process_create_ata(create_ata: &CreateAta, accounts: &[AccountInfo]) {
+    pub fn process_create_ata(create_ata: &CreateAta, accounts: &[AccountInfo]) {
         let ata = Self::derive_ata(&create_ata.wallet, &create_ata.mint);
 
         let ix = Instruction {
