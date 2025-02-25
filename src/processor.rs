@@ -1,20 +1,21 @@
 use pinocchio::{
     account_info::AccountInfo,
+    get_account_info,
     instruction::{AccountMeta, Instruction},
-    msg,
     program::invoke,
     pubkey::find_program_address,
+    ProgramResult,
 };
 
 use crate::{
     constants::{SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, SPL_TOKEN_PROGRAM_ID, SYSTEM_PROGRAM_ID},
-    instructions::{AtaInstructions, CreateAta},
+    instructions::CreateAta,
 };
 
 pub struct Processor {}
 
 impl Processor {
-    pub fn process_create_ata(create_ata: &CreateAta, accounts: &[AccountInfo]) {
+    pub fn process_create_ata(create_ata: &CreateAta, accounts: &[AccountInfo]) -> ProgramResult {
         let ata = Self::derive_ata(&create_ata.wallet, &create_ata.mint);
 
         let ix = Instruction {
@@ -29,25 +30,19 @@ impl Processor {
                 AccountMeta::readonly(&SPL_TOKEN_PROGRAM_ID),
             ],
         };
-        let mut acc_iter = accounts.iter();
 
         let accounts = [
-            acc_iter.next().unwrap(),
-            acc_iter.next().unwrap(),
-            acc_iter.next().unwrap(),
-            acc_iter.next().unwrap(),
-            acc_iter.next().unwrap(),
-            acc_iter.next().unwrap(),
+            get_account_info!(accounts, 0 as usize),
+            get_account_info!(accounts, 1 as usize),
+            get_account_info!(accounts, 2 as usize),
+            get_account_info!(accounts, 3 as usize),
+            get_account_info!(accounts, 4 as usize),
+            get_account_info!(accounts, 5 as usize),
         ];
 
-        let res = invoke(&ix, &accounts);
+        invoke(&ix, &accounts)?;
 
-        match res {
-            Ok(_) => {
-                msg!("Associated token account created successfully");
-            }
-            Err(_) => {}
-        }
+        Ok(())
     }
 
     fn derive_ata(wallet: &[u8; 32], mint: &[u8; 32]) -> [u8; 32] {

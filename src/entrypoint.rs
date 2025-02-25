@@ -5,7 +5,7 @@ use crate::{instructions::AtaInstructions, processor::Processor};
 entrypoint!(process_instruction);
 
 pub fn process_instruction(
-    program_id: &Pubkey,
+    _program_id: &Pubkey,
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
@@ -13,7 +13,14 @@ pub fn process_instruction(
 
     match ix_data {
         Ok(AtaInstructions::CreateATA(create_ata)) => {
-            Processor::process_create_ata(&create_ata, accounts);
+            let res = Processor::process_create_ata(&create_ata, accounts);
+
+            match res {
+                Ok(_) => {}
+                Err(e) => {
+                    println!("Error: {:?}", e);
+                }
+            }
         }
         Err(_) => {}
     }

@@ -1,7 +1,10 @@
+use borsh::{BorshDeserialize, BorshSerialize};
+
 pub enum AtaInstructions {
     CreateATA(CreateAta),
 }
 
+#[derive(BorshDeserialize, BorshSerialize)]
 pub struct CreateAta {
     pub discriminator: u8,
     pub mint: [u8; 32],
